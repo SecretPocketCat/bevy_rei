@@ -58,6 +58,7 @@ pub struct InteractionState {
   pub cursor_positions:          HashMap<Group, Vec2>,
   pub last_window_id:            WindowId,
   pub last_cursor_position:      Vec2,
+  pub scale:                     Option<f32>,
 }
 
 impl InteractionState {
@@ -112,7 +113,8 @@ fn interaction_state_system(
       let ndc_to_world: Mat4 = camera_matrix * projection_matrix.inverse();
       let cursor_position = ndc_to_world
         .transform_point3(cursor_position_ndc.extend(1.0))
-        .truncate();
+        .truncate()
+        * interaction_state.scale.unwrap_or(1.);
 
       for group in &interact_source.groups {
         if interaction_state
@@ -164,6 +166,7 @@ fn interaction_system(
       // TODO: use bounding_mesh
       let relative_cursor_position = (cursor_position - global_transform.translation().truncate())
         / Transform::from(*global_transform).scale.truncate();
+
       if (interactable.bounding_box.0.x..interactable.bounding_box.1.x)
         .contains(&relative_cursor_position.x)
         && (interactable.bounding_box.0.y..interactable.bounding_box.1.y)
