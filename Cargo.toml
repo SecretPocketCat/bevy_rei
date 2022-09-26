@@ -1,6 +1,3 @@
 [workspace]
-members = [
-    "bevy_interact_2d",
-    "bevy_progress_bar",
-]
+members = ["bevy_interact_2d"]
 resolver = "2"
